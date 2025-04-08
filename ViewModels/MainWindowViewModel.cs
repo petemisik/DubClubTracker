@@ -14,8 +14,56 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private string _username = string.Empty;
     private string _password = string.Empty;
-
+    private string _eventTitle = string.Empty;
+    private string _eventDate = string.Empty;
+    private string _startTime = string.Empty;
+    private string _endTime = string.Empty;
     private string _successMessage = string.Empty;
+
+    private string _profilePicture = string.Empty;
+    
+    private Profile profile = new();
+
+    public string EventTitle
+    {
+        get => _eventTitle;
+        set
+        {
+            _eventTitle = value;
+            OnPropertyChanged(nameof(EventTitle));
+        }
+    }
+
+    public string EventDate
+    {
+        get => _eventDate;
+        set
+        {
+            _eventDate = value;
+            OnPropertyChanged(nameof(EventDate));
+        }
+    }
+
+    public string StartTime
+    {
+        get => _startTime;
+        set
+        {
+            _startTime = value;
+            OnPropertyChanged(nameof(StartTime));
+        }
+    }
+
+    public string EndTime
+    {
+        get => _endTime;
+        set
+        {
+            _endTime = value;
+            OnPropertyChanged(nameof(EndTime));
+        }
+    }
+    
     public string SuccessMessage
     {
         get
@@ -73,8 +121,51 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Switch to the main view after login
         ShowSplashScreen();
+
+        profile = LoadProfile();
     }
 
+
+    private Profile LoadProfile()
+    {
+        return new Profile
+        {
+            ProfilePicture = "avares://DubClubTracker/Assets/Images/emptyman.png",
+            FirstName = " ",
+            LastName = " "
+        };
+    }
+
+    [RelayCommand]
+    private void Start()
+    {
+        _startTime = DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    [RelayCommand]
+    private void Stop()
+    {
+        _endTime = DateTime.Now.ToString("HH:mm:ss");
+        TimeSpan timeSpent = DateTime.Parse(_endTime) - DateTime.Parse(_startTime);
+        string today = DateTime.Now.ToString("MM/dd/yyyy");
+        TimeModel timeModel = new TimeModel
+        {
+            LastName = profile.FirstName,
+            FirstName = profile.LastName,
+            StartTime = _startTime,
+            EndTime = _endTime,
+            TotalTime = timeSpent.ToString(@"hh\:mm\:ss"),
+            Date = today,
+            Event = _eventTitle
+        };
+    }
+
+    [RelayCommand]
+    private void EditProifle()
+    {
+        // Logic to edit the profile
+        Console.WriteLine("Edit Profile button clicked!");
+    }
     private async void ShowSplashScreen()
     {
         CurrentView = new SplashView();

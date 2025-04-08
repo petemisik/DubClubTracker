@@ -2,11 +2,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DubClubTracker.Views.MainContentView">
     <Grid>
-        <Image Source="avares://DubClubTracker/Assets/Smile.png"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               Width="400"
-               Height="400"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel
+            Grid.Row="0">
+            <Image
+                Source="{Binding ProfileImage}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Command="{Binding EditProfileCommand}"
+                Width="100"
+                Height="100" />
+            <StackPanel
+                Orientation="Horizontal">
+                <Button
+                    Content="Start"
+                    Command="{Binding StartCommand}"
+                    Margin="5"
+                    />
+                <Button
+                    Content="Stop"
+                    Command="{Binding StopCommand}"
+                    Margin="5"
+                    />
+            </StackPanel>
+            <TextBox
+                Name="EventTitle"
+                Watermark="Event Title"
+                Text="{Binding EventTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Margin="5" />
+        </StackPanel>
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Auto">
+            <ItemsControl
+                Items="{Binding Events}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock
+                                Text="{Binding Title}"
+                                FontWeight="Bold"/>
+                            <TextBlock
+                                Text="{Binding StartTime}"/>
+                            <TextBlock
+                                Text="{Binding EndTime}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
+
 
 </UserControl>
