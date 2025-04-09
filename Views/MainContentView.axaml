@@ -1,6 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="DubClubTracker.Views.MainContentView">
+             xmlns:vm="clr-namespace:DubClubTracker.ViewModels"
+             x:Class="DubClubTracker.Views.MainContentView"
+             x:DataType="vm:MainWindowViewModel">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -8,13 +10,16 @@
         </Grid.RowDefinitions>
         <StackPanel
             Grid.Row="0">
-            <Image
-                Source="{Binding ProfileImage}"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Command="{Binding EditProfileCommand}"
-                Width="100"
-                Height="100" />
+            <Button Command="{Binding EditProfileCommand}"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                <Image
+                    Source="{Binding ProfileImage}"
+                    HorizontalAlignment="Right"
+                    Width="50"
+                    Height="50" />
+            </Button>
+
             <StackPanel
                 Orientation="Horizontal">
                 <Button
@@ -34,7 +39,7 @@
                 Text="{Binding EventTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="5" />
         </StackPanel>
-        <ScrollViewer
+        <!-- <ScrollViewer
             Grid.Row="1"
             VerticalScrollBarVisibility="Auto">
             <ItemsControl
@@ -53,7 +58,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
+        </ScrollViewer> -->
     </Grid>
 
 

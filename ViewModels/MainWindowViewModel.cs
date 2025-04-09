@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using CommunityToolkit.Mvvm.Input;
 using DubClubTracker.Models;
 using DubClubTracker.Views;
@@ -19,8 +22,13 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _startTime = string.Empty;
     private string _endTime = string.Empty;
     private string _successMessage = string.Empty;
+    private Bitmap _profileImage = new(AssetLoader.Open(new Uri(@"avares://DubClubTracker/Assets/emptyman.png")));
 
-    private string _profilePicture = string.Empty;
+    public Bitmap ProfileImage
+    {
+        get => _profileImage;
+        set => SetProperty(ref _profileImage, value, nameof(ProfileImage));
+    }
     
     private Profile profile = new();
 
@@ -121,31 +129,32 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Switch to the main view after login
         ShowSplashScreen();
-
         profile = LoadProfile();
     }
 
-
     private Profile LoadProfile()
     {
-        return new Profile
+        Profile profile = new Profile
         {
-            ProfilePicture = "avares://DubClubTracker/Assets/Images/emptyman.png",
+            ProfilePicture = "avares://DubClubTracker/Assets/emptyman.png",
             FirstName = " ",
             LastName = " "
         };
+
+        ProfileImage = new Bitmap(AssetLoader.Open(new Uri(profile.ProfilePicture)));
+        return profile;
     }
 
     [RelayCommand]
     private void Start()
     {
-        _startTime = DateTime.Now.ToString("HH:mm:ss");
+        StartTime = DateTime.Now.ToString("HH:mm:ss");
     }
 
     [RelayCommand]
     private void Stop()
     {
-        _endTime = DateTime.Now.ToString("HH:mm:ss");
+        EndTime = DateTime.Now.ToString("HH:mm:ss");
         TimeSpan timeSpent = DateTime.Parse(_endTime) - DateTime.Parse(_startTime);
         string today = DateTime.Now.ToString("MM/dd/yyyy");
         TimeModel timeModel = new TimeModel
@@ -154,17 +163,33 @@ public partial class MainWindowViewModel : ViewModelBase
             FirstName = profile.LastName,
             StartTime = _startTime,
             EndTime = _endTime,
-            TotalTime = timeSpent.ToString(@"hh\:mm\:ss"),
+            TotalTime = ((int)Math.Floor(timeSpent.TotalMinutes)).ToString(),
             Date = today,
             Event = _eventTitle
         };
+
+        Console.WriteLine("TimeModel created:");
+        Console.WriteLine($"LastName: {timeModel.LastName}");
+        Console.WriteLine($"FirstName: {timeModel.FirstName}");
+        Console.WriteLine($"StartTime: {timeModel.StartTime}");
+        Console.WriteLine($"EndTime: {timeModel.EndTime}");
+        Console.WriteLine($"TotalTime: {timeModel.TotalTime} minutes");
+        Console.WriteLine($"Date: {timeModel.Date}");
+        Console.WriteLine($"Event: {timeModel.Event}");
     }
 
     [RelayCommand]
-    private void EditProifle()
+    private void EditProfile()
     {
         // Logic to edit the profile
         Console.WriteLine("Edit Profile button clicked!");
+        CurrentView = new ProfileView(() => 
+        {
+            CurrentView = new MainContentView
+            {
+                DataContext = this
+            };
+        });
     }
     private async void ShowSplashScreen()
     {

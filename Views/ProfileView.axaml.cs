@@ -1,11 +1,14 @@
+using System;
 using Avalonia.Controls;
+using DubClubTracker.ViewModels;
 
-using DubClubTracker.Views;
+namespace DubClubTracker.Views;
 
 public partial class ProfileView : UserControl
 {
-    public ProfileView()
+    public ProfileView(Action onSaveComplete)
     {
         InitializeComponent();
+        DataContext = new ProfileViewModel(onSaveComplete);
     }
 }
